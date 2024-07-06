@@ -16,10 +16,12 @@ export const moonshotSwap = async (mintAddress: string, creator: Keypair, tokenA
       authToken: '',
       environment: Environment.MAINNET,
     });
-
+    console.log(1)
+    
     const token = moonshot.Token({
       mintAddress
     });
+    console.log(2)
 
     const curvePos = await token.getCurvePosition();
     console.log('curvePos', curvePos);
@@ -27,41 +29,49 @@ export const moonshotSwap = async (mintAddress: string, creator: Keypair, tokenA
     const creatorPK = creator.publicKey.toBase58()
     console.log('creatorPK', creatorPK);
 
+    // token to sol
     const collateralAmount = await token.getCollateralAmountByTokens({
       tokenAmount,
       tradeDirection
     });
+
+    // sol to token
+    // const collateralAmount = await token.getTokenAmountByCollateral({
+    //   collateralAmount: tokenAmount,
+    //   tradeDirection
+    // });
+
     console.log('collateralAmount', collateralAmount);
+    return { success: 'success' }
+    // const { transaction } = await token.prepareTx({
+    //   slippageBps,
+    //   creatorPK,
+    //   tokenAmount,
+    //   collateralAmount,
+    //   tradeDirection 
+    // });
 
-    const { transaction } = await token.prepareTx({
-      slippageBps,
-      creatorPK,
-      tokenAmount,
-      collateralAmount,
-      tradeDirection
-    });
+    // const versionedTransaction =
+    //   SolanaSerializationService.deserializeVersionedTransaction(transaction);
 
-    const versionedTransaction =
-      SolanaSerializationService.deserializeVersionedTransaction(transaction);
+    // if (versionedTransaction) {
+    //   const signedTx: VersionedTransaction = signVersionedTransaction(versionedTransaction, creator)
 
-    if (versionedTransaction) {
-      const signedTx: VersionedTransaction = signVersionedTransaction(versionedTransaction, creator)
+    //   if (signedTx) {
+    //     const signature = await solanaConnection.sendTransaction(signedTx, {
+    //       skipPreflight: true,
+    //     });
+    //     console.log('sent', signature)
+    //     await solanaConnection.confirmTransaction(signature)
+    //     console.log('confirmed', signature)
 
-      if (signedTx) {
-        const signature = await solanaConnection.sendTransaction(signedTx, {
-          skipPreflight: true,
-        });
-        console.log('sent', signature)
-        await solanaConnection.confirmTransaction(signature)
-        console.log('confirmed', signature)
-
-        return { success: signature }
-      } else {
-        return { error: 'sign failed' }
-      }
-    } else {
-      return { error: 'deserialize failed' }
-    }
+    //     return { success: signature }
+    //   } else {
+    //     return { error: 'sign failed' }
+    //   }
+    // } else {
+    //   return { error: 'deserialize failed' }
+    // }
   } catch (e) {
     console.error(e)
     return { error: e }
