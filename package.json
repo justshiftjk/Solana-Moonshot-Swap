@@ -3,6 +3,7 @@
     "dev": "ts-node-dev index.ts"
   },
   "dependencies": {
+    "@solana/spl-token": "0.4.3",
     "@solana/web3.js": "^1.94.0",
     "@wen-moon-ser/moonshot-sdk": "^0.1.0-alpha.0.0.2",
     "axios": "^1.7.2",
