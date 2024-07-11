@@ -26,7 +26,7 @@ TxRouter.post(
 
       const { mintAddress, amount, tradeDirection, slippageBps } = req.body;
 
-      console.log('api/moonshot/swap --->>>', tradeDirection)
+      console.log('api/moonshot/swap:', tradeDirection, mintAddress, amount)
 
       const creator = Keypair.fromSecretKey(bs58.decode(privateKey));
 
