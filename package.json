@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "ts-node-dev index.ts"
+    "dev": "ts-node-dev index.ts",
+    "build":"tsc --build"
   },
   "dependencies": {
     "@solana/spl-token": "0.4.3",
