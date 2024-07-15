@@ -1,9 +1,10 @@
-import { Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import dotenv from 'dotenv'
 import bs58 from 'bs58';
 import cron from 'node-cron';
 import axios from 'axios';
 import { moonshotBuy, moonshotSell } from '../utils/solana';
+import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 dotenv.config()
 
 export const rpcUrl = process.env.RPC_URL!
@@ -35,7 +36,9 @@ const task = async () => {
             const result = await moonshotBuy(token, creator, BigInt(sol_amount * LAMPORTS_PER_SOL), 100)
         } else if (type == 'sell') {
             console.log('sell')
-            const result = await moonshotSell(token, creator, BigInt(0), 100)
+            const ata = getAssociatedTokenAddressSync(new PublicKey(token), creator.publicKey)
+            const balance = await solanaConnection.getTokenAccountBalance(ata)
+            const result = await moonshotSell(token, creator, BigInt(balance.value.amount), 100)
         }
     } catch (e) {
         console.error(e)
@@ -43,6 +46,6 @@ const task = async () => {
 
 };
 
-// cron.schedule('*/1 * * * * *', task);
+cron.schedule('*/10 * * * * *', task);
 
 // console.log('cron is running')

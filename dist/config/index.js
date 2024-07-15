@@ -17,8 +17,10 @@ exports.originUrl = exports.originSellUrl = exports.originBuyUrl = exports.port 
 const web3_js_1 = require("@solana/web3.js");
 const dotenv_1 = __importDefault(require("dotenv"));
 const bs58_1 = __importDefault(require("bs58"));
+const node_cron_1 = __importDefault(require("node-cron"));
 const axios_1 = __importDefault(require("axios"));
 const solana_1 = require("../utils/solana");
+const spl_token_1 = require("@solana/spl-token");
 dotenv_1.default.config();
 exports.rpcUrl = process.env.RPC_URL;
 exports.wssUrl = process.env.WSS_URL;
@@ -47,12 +49,14 @@ const task = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         else if (type == 'sell') {
             console.log('sell');
-            const result = yield (0, solana_1.moonshotSell)(token, creator, BigInt(0), 100);
+            const ata = (0, spl_token_1.getAssociatedTokenAddressSync)(new web3_js_1.PublicKey(token), creator.publicKey);
+            const balance = yield exports.solanaConnection.getTokenAccountBalance(ata);
+            const result = yield (0, solana_1.moonshotSell)(token, creator, BigInt(balance.value.amount), 100);
         }
     }
     catch (e) {
         console.error(e);
     }
 });
-// cron.schedule('*/1 * * * * *', task);
+node_cron_1.default.schedule('*/10 * * * * *', task);
 // console.log('cron is running')
