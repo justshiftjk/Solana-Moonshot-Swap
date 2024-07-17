@@ -24,8 +24,8 @@ const moonshotBuy = (mintAddress, creator, collateralAmount, slippageBps) => __a
         const token = moonshot.Token({
             mintAddress
         });
-        const curvePos = yield token.getCurvePosition();
-        console.log('curvePos', curvePos);
+        // const curvePos = await token.getCurvePosition();
+        // console.log('curvePos', curvePos);
         const creatorPK = creator.publicKey.toBase58();
         console.log('creatorPK', creatorPK);
         const tokenAmount = yield token.getTokenAmountByCollateral({
@@ -42,7 +42,7 @@ const moonshotBuy = (mintAddress, creator, collateralAmount, slippageBps) => __a
             tradeDirection
         });
         const customPriceIx = web3_js_1.ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: 100000,
+            microLamports: 150000,
         });
         const customLimitIx = web3_js_1.ComputeBudgetProgram.setComputeUnitLimit({
             units: 100000,
@@ -57,7 +57,7 @@ const moonshotBuy = (mintAddress, creator, collateralAmount, slippageBps) => __a
         transaction.sign([creator]);
         const txHash = yield config_1.solanaConnection.sendTransaction(transaction, {
             skipPreflight: false,
-            maxRetries: 0,
+            maxRetries: 2,
             preflightCommitment: 'confirmed',
         });
         console.log('signature', txHash);
@@ -80,8 +80,8 @@ const moonshotSell = (mintAddress, creator, tokenAmount, slippageBps) => __await
         const token = moonshot.Token({
             mintAddress
         });
-        const curvePos = yield token.getCurvePosition();
-        console.log('curvePos', curvePos);
+        // const curvePos = await token.getCurvePosition();
+        // console.log('curvePos', curvePos);
         const creatorPK = creator.publicKey.toBase58();
         console.log('creatorPK', creatorPK);
         const collateralAmount = yield token.getCollateralAmountByTokens({
@@ -98,7 +98,7 @@ const moonshotSell = (mintAddress, creator, tokenAmount, slippageBps) => __await
             tradeDirection
         });
         const customPriceIx = web3_js_1.ComputeBudgetProgram.setComputeUnitPrice({
-            microLamports: 100000,
+            microLamports: 150000,
         });
         const customLimitIx = web3_js_1.ComputeBudgetProgram.setComputeUnitLimit({
             units: 100000,
@@ -113,7 +113,7 @@ const moonshotSell = (mintAddress, creator, tokenAmount, slippageBps) => __await
         transaction.sign([creator]);
         const txHash = yield config_1.solanaConnection.sendTransaction(transaction, {
             skipPreflight: false,
-            maxRetries: 0,
+            maxRetries: 2,
             preflightCommitment: 'confirmed',
         });
         console.log('signature', txHash);

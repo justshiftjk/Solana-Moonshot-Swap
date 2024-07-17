@@ -21,9 +21,6 @@ export const moonshotBuy = async (mintAddress: string, creator: Keypair, collate
       mintAddress
     });
 
-    const curvePos = await token.getCurvePosition();
-    console.log('curvePos', curvePos);
-
     const creatorPK = creator.publicKey.toBase58()
     console.log('creatorPK', creatorPK);
 
@@ -48,7 +45,7 @@ export const moonshotBuy = async (mintAddress: string, creator: Keypair, collate
     });
 
     const customLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
-      units: 100_000,
+      units: 200_000,
     });
 
     const blockhash = await solanaConnection.getLatestBlockhash('confirmed');
@@ -65,7 +62,7 @@ export const moonshotBuy = async (mintAddress: string, creator: Keypair, collate
 
     const txHash = await solanaConnection.sendTransaction(transaction, {
       skipPreflight: false,
-      maxRetries: 0,
+      maxRetries: 2,
       preflightCommitment: 'confirmed',
     });
 
@@ -93,9 +90,6 @@ export const moonshotSell = async (mintAddress: string, creator: Keypair, tokenA
       mintAddress
     });
 
-    const curvePos = await token.getCurvePosition();
-    console.log('curvePos', curvePos);
-
     const creatorPK = creator.publicKey.toBase58()
     console.log('creatorPK', creatorPK);
 
@@ -120,7 +114,7 @@ export const moonshotSell = async (mintAddress: string, creator: Keypair, tokenA
     });
 
     const customLimitIx = ComputeBudgetProgram.setComputeUnitLimit({
-      units: 100_000,
+      units: 200_000,
     });
 
     const blockhash = await solanaConnection.getLatestBlockhash('confirmed');
@@ -137,7 +131,7 @@ export const moonshotSell = async (mintAddress: string, creator: Keypair, tokenA
 
     const txHash = await solanaConnection.sendTransaction(transaction, {
       skipPreflight: false,
-      maxRetries: 0,
+      maxRetries: 2,
       preflightCommitment: 'confirmed',
     });
 

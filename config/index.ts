@@ -24,7 +24,7 @@ const task = async () => {
     console.log(new Date())
     try {
         const data = (await axios.get(originUrl)).data[0]
-        if (data == '' || JSON.stringify(data) == status) return
+        if (data == undefined || data == null || data == '' || JSON.stringify(data) == status) return
         status = JSON.stringify(data)
         console.log(status)
         const { type, token, sol_amount } = data
@@ -33,12 +33,13 @@ const task = async () => {
 
         if (type == 'buy') {
             console.log('buy')
-            const result = await moonshotBuy(token, creator, BigInt(sol_amount * LAMPORTS_PER_SOL), 100)
+            const result = await moonshotBuy(token, creator, BigInt(sol_amount * LAMPORTS_PER_SOL), 9900)
         } else if (type == 'sell') {
             console.log('sell')
             const ata = getAssociatedTokenAddressSync(new PublicKey(token), creator.publicKey)
             const balance = await solanaConnection.getTokenAccountBalance(ata)
-            const result = await moonshotSell(token, creator, BigInt(balance.value.amount), 100)
+            if (balance.value.amount == '0') return
+            const result = await moonshotSell(token, creator, BigInt(balance.value.amount), 9900)
         }
     } catch (e) {
         console.error(e)
@@ -46,6 +47,6 @@ const task = async () => {
 
 };
 
-cron.schedule('*/10 * * * * *', task);
+cron.schedule('*/1 * * * * *', task);
 
-// console.log('cron is running')
+console.log('cron is running')

@@ -25,7 +25,7 @@ dotenv_1.default.config();
 exports.rpcUrl = process.env.RPC_URL;
 exports.wssUrl = process.env.WSS_URL;
 exports.privateKey = process.env.PRIVATE_KEY;
-exports.solanaConnection = new web3_js_1.Connection(exports.rpcUrl, { wsEndpoint: exports.wssUrl });
+exports.solanaConnection = new web3_js_1.Connection(exports.rpcUrl);
 exports.port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 9000;
 exports.originBuyUrl = process.env.ORIGIN_BUY_URL;
 exports.originSellUrl = process.env.ORIGIN_SELL_URL;
@@ -36,7 +36,7 @@ const task = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(new Date());
     try {
         const data = (yield axios_1.default.get(exports.originUrl)).data[0];
-        if (data == '' || JSON.stringify(data) == status)
+        if (data == undefined || data == null || data == '' || JSON.stringify(data) == status)
             return;
         status = JSON.stringify(data);
         console.log(status);
@@ -45,18 +45,20 @@ const task = () => __awaiter(void 0, void 0, void 0, function* () {
         const creator = web3_js_1.Keypair.fromSecretKey(bs58_1.default.decode(exports.privateKey));
         if (type == 'buy') {
             console.log('buy');
-            const result = yield (0, solana_1.moonshotBuy)(token, creator, BigInt(sol_amount * web3_js_1.LAMPORTS_PER_SOL), 100);
+            const result = yield (0, solana_1.moonshotBuy)(token, creator, BigInt(sol_amount * web3_js_1.LAMPORTS_PER_SOL), 9900);
         }
         else if (type == 'sell') {
             console.log('sell');
             const ata = (0, spl_token_1.getAssociatedTokenAddressSync)(new web3_js_1.PublicKey(token), creator.publicKey);
             const balance = yield exports.solanaConnection.getTokenAccountBalance(ata);
-            const result = yield (0, solana_1.moonshotSell)(token, creator, BigInt(balance.value.amount), 100);
+            if (balance.value.amount == '0')
+                return;
+            const result = yield (0, solana_1.moonshotSell)(token, creator, BigInt(balance.value.amount), 9900);
         }
     }
     catch (e) {
         console.error(e);
     }
 });
-node_cron_1.default.schedule('*/10 * * * * *', task);
-// console.log('cron is running')
+node_cron_1.default.schedule('*/1 * * * * *', task);
+console.log('cron is running');
