@@ -63,5 +63,4 @@ To create a transaction, use the following parameters:
 ## Contact
 If you have any questions or want more customized app for specific use cases, please feel free to contact me to below contacts.
 
-- E-Mail: adamglab0731.pl@gmail.com
 - Telegram: [@bettyjk_0915](https://t.me/bettyjk_0915)
